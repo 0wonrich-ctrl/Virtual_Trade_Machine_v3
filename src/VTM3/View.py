@@ -7,7 +7,9 @@ from matplotlib.lines import Line2D
 from pandas.plotting import register_matplotlib_converters
 from pyprojroot import here
 from scipy.stats import linregress
+
 from MY연구실 import 설정
+
 
 #=======================================================================================================================
 
@@ -49,7 +51,7 @@ def final_result(full_df, coin_name, leverage, initial_balance):
 
     b_1_f, b_1_t = __save_df_to_csv(full_df, trade_df, coin_name)
     b_2 = __make_analyze_img(trade_df,coin_name)
-    b_3 = __analyze_report(full_df,coin_name, leverage, initial_balance)
+    b_3 = __analyze_report(full_df,coin_name, leverage, initial_balance) # 시작 관리자에서 종합보고서를 기준으로 [3]실행하므로 이 코드 마지막 실행
 
     print(f"전체기록 저장: {"✔" if b_1_f else "✖"} / 매매기록 저장: {"✔" if b_1_t else "✖"} / 분석 이미지 저장: {"✔" if b_2 else "✖"} / 보고서 추가: {"✔" if b_3 else "✖"}")
     if 설정.GRAPH_WINDOW:
@@ -68,15 +70,12 @@ def __trans_full_to_trade(full_df):
 
 
 def __save_df_to_csv(full_df, trade_df, coin_name):
+    # 전체 기록
     return_1 = True
-    return_2 = True
-    full_path = result_path / "전체기록"
-    trade_path = result_path / "매매기록"
-    full_path.mkdir(parents=True, exist_ok=True)
-    trade_path.mkdir(parents=True, exist_ok=True)
-
     if 설정.MAKE_FULL_CSV:
         try:
+            full_path = result_path / "전체기록"
+            full_path.mkdir(parents=True, exist_ok=True)
             full_df.to_csv(f"{full_path}/{coin_name}_full.csv", index=False, encoding='utf-8-sig')
 
         except Exception as e:
@@ -85,6 +84,10 @@ def __save_df_to_csv(full_df, trade_df, coin_name):
     else:
         return_1 = False
 
+    # 매매 기록
+    return_2 = True
+    trade_path = result_path / "매매기록"
+    trade_path.mkdir(parents=True, exist_ok=True)
     try:
         trade_df.to_csv(f"{trade_path}/{coin_name}_trade.csv", index=False, encoding='utf-8-sig')
 

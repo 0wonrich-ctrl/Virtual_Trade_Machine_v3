@@ -1,15 +1,12 @@
-import re
 import shutil
-import time
 import winsound
 from pyprojroot import here
-
+import re
+import time
 from MY연구실 import 설정
 from src.Start_Tool.win_loading_tool import start_loading, stop_loading
 
 moon_idx = 0
-
-
 def get_moon():
     global moon_idx
     moon_list = ["🌒", "🌓", "🌔", "🌕", "🌖", "🌗", "🌘", "🌑"]
@@ -17,22 +14,41 @@ def get_moon():
     moon_idx += 1
     return char
 
-
 def rep_run():
     start_loading()
-    # 1. txt 파일 초기화
-    txt_path = here() / "MY연구실" / "결과" / "종합보고서.txt"
+
+    # 1. 모든 결과 파일, 폴더 초기화
+    result_path = here() / "MY연구실" / "결과"
+    txt_path = result_path / "종합보고서.txt"
     txt_path.parent.mkdir(parents=True, exist_ok=True)
 
+    img_path = result_path / "분석이미지"
+    full_path = result_path / "전체기록"
+    trade_path = result_path / "매매기록"
+
     try:
+        if img_path.exists():
+            shutil.rmtree(img_path)
+            img_path.mkdir(parents=True, exist_ok=True)
+
+        if full_path.exists():
+            shutil.rmtree(full_path)
+            if 설정.MAKE_FULL_CSV:
+                full_path.mkdir(parents=True, exist_ok=True)
+
+        if trade_path.exists():
+            shutil.rmtree(trade_path)
+            trade_path.mkdir(parents=True, exist_ok=True)
+
         with open(txt_path, 'w', encoding='utf-8') as f:
-            print("[1] ✅ 종합보고서.txt 초기화 완료")
+            print("[1] ✅ 결과 폴더 초기화 완료")
 
     except Exception as e:
-        print(f"[1] ❌ 종합보고서.txt 초기화 실패 : {e}")
+        print(f"[1] ❌ 결과 폴더 초기화 실패 : {e}")
         exit(1)
 
-    # 정렬 목표 순서
+
+    # 2. 종합보고서 내용 정렬
     TARGET_ORDER = ['BTC', 'ETH', 'XRP', 'BNB', 'SOL', 'DOGE']
 
     while True:
@@ -84,18 +100,27 @@ def rep_run():
             print(f"\r[2] ❌ 리포트 정렬 중 오류 발생: {e}")
             break
 
-    #
-    if not 설정.MAKE_FULL_CSV:
-        path = here() / "MY연구실" / "결과" / "전체기록"
-        path.mkdir(parents=True, exist_ok=True)
-        for item in path.iterdir():
-            try:
-                if item.is_file() or item.is_symlink():
-                    item.unlink()  # 파일 삭제
-                elif item.is_dir():
-                    shutil.rmtree(item)  # 하위 폴더 삭제
-            except Exception as e:
-                print(f"[3] ❌ 전체기록 삭제 실패 ({item.name}): {e}")
+    # 3. 폴더 내용 갯수 출력
+    full_n = 0
+    full_b = True
+
+    img_n = len([f for f in img_path.iterdir() if f.is_file()])
+    img_b = True if img_n == 6 else False
+
+    trade_n = len([f for f in trade_path.iterdir() if f.is_file()])
+    trade_b = True if trade_n == 6 else False
+
+    if 설정.MAKE_FULL_CSV:
+        full_n = len([f for f in full_path.iterdir() if f.is_file()])
+        full_b = True if full_n == 6 else False
+
+    if img_b and trade_b and full_b:
+        print(f"[3] ✅ 결과 자료 개수 정상 ( 분석이미지:{img_n} / 매매기록:{trade_n} {f"/ 전체기록: {full_n}" if 설정.MAKE_FULL_CSV else ""})")
+    else:
+        print(f"[3] ❌ 결과 자료 개수 비정상 ( 분석이미지:{img_n} / 매매기록:{trade_n} {f"/ 전체기록: {full_n}" if 설정.MAKE_FULL_CSV else ""})")
+
+
+
 
     stop_loading()
     if 설정.FINISH_SOUND:

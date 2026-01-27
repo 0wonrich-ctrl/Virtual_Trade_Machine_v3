@@ -1,5 +1,5 @@
-import tkinter as tk
 import threading
+import tkinter as tk
 
 # --- 설정값 ---
 SIZE = 4  # 점 크기 (지름)
