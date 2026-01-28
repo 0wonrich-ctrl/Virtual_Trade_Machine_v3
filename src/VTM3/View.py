@@ -49,11 +49,11 @@ def final_result(full_df, coin_name, leverage, initial_balance):
 
     trade_df = __trans_full_to_trade(full_df)
 
-    b_1_f, b_1_t = __save_df_to_csv(full_df, trade_df, coin_name)
+    #b_1_f, b_1_t = __save_df_to_csv(full_df, trade_df, coin_name)
     b_2 = __make_analyze_img(trade_df,coin_name)
     b_3 = __analyze_report(full_df,coin_name, leverage, initial_balance) # 시작 관리자에서 종합보고서를 기준으로 [3]실행하므로 이 코드 마지막 실행
 
-    print(f"전체기록 저장: {"✔" if b_1_f else "✖"} / 매매기록 저장: {"✔" if b_1_t else "✖"} / 분석 이미지 저장: {"✔" if b_2 else "✖"} / 보고서 추가: {"✔" if b_3 else "✖"}")
+    print(f"분석 이미지 저장: {"✔" if b_2 else "✖"} / 보고서 추가: {"✔" if b_3 else "✖"}")
     if 설정.GRAPH_WINDOW:
         __view_chart(full_df, coin_name)
 
