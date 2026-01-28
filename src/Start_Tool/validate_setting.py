@@ -33,8 +33,9 @@ def vld_run():
         View.error("ACCOUNT_BLOWN 설정 오류: 값은 0 이상 1 미만이어야 합니다. ")
         exit(1)
 
+    '''
     if not isinstance(설정.MAKE_FULL_CSV, bool):
         View.error("MAKE_FULL_CSV 설정 오류: True 또는 False 값만 허용됩니다.")
         exit(1)
-
+    '''
 
