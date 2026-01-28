@@ -33,12 +33,12 @@ def rep_run():
 
         if full_path.exists():
             shutil.rmtree(full_path)
-            if 설정.MAKE_FULL_CSV:
-                full_path.mkdir(parents=True, exist_ok=True)
+            #if 설정.MAKE_FULL_CSV:
+            #    full_path.mkdir(parents=True, exist_ok=True)
 
         if trade_path.exists():
             shutil.rmtree(trade_path)
-            trade_path.mkdir(parents=True, exist_ok=True)
+            # trade_path.mkdir(parents=True, exist_ok=True)
 
         with open(txt_path, 'w', encoding='utf-8') as f:
             print("[1] ✅ 결과 폴더 초기화 완료")
@@ -107,6 +107,7 @@ def rep_run():
     img_n = len([f for f in img_path.iterdir() if f.is_file()])
     img_b = True if img_n == 6 else False
 
+    """
     trade_n = len([f for f in trade_path.iterdir() if f.is_file()])
     trade_b = True if trade_n == 6 else False
 
@@ -119,8 +120,12 @@ def rep_run():
     else:
         print(f"[3] ❌ 결과 자료 개수 비정상 ( 분석이미지:{img_n} / 매매기록:{trade_n} {f"/ 전체기록: {full_n}" if 설정.MAKE_FULL_CSV else ""})")
 
+    """
 
-
+    if img_b:
+        print(f"[3] ✅ 결과 자료 개수 정상 ( 분석이미지:{img_n} )")
+    else:
+        print(f"[3] ❌ 결과 자료 개수 비정상 ( 분석이미지:{img_n} )")
 
     stop_loading()
     if 설정.FINISH_SOUND:
