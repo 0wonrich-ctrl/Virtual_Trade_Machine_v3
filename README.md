@@ -45,12 +45,17 @@
 ```python
 from src import VirtualTradeMachine as vtm
 
+ema_data = []
+rsi_data = []
+
 def ema(data):
     # ema를 계산해서 반환해주는 코드...
+    vtm.register_indicator(name="EMA", value=ema_value)
     return ema_value
 
 def rsi(data):
     # rsi를 계산해서 반환해주는 코드...
+    vtm.register_indicator(name="rsi", value=rsi_value, sub_chart=True)
     return rsi_value
 
 def strategy():
@@ -63,9 +68,6 @@ def strategy():
         
         ema_value = ema(now_data)
         rsi_value = rsi(now_data)
-
-        vtm.register_indicator(name="EMA", value=ema_value)
-        vtm.register_indicator(name="rsi", value=rsi_value, sub_chart=True)
         
         if not now_data['is_position']:
             if now_data['is_order']:
@@ -91,6 +93,7 @@ def strategy():
 + 무한 반복문 첫 코드로 `vtm.next_time()`을 실행하여 다음 1분봉으로 넘어갑니다.
 + `VirtualTradeMachine`이 내부적으로 계좌 청산 및 데이터 소진 시 자동 종료시키기에 사용자가 따로 무한 반복문 내에 정지코드를 추가하지 않아도 됩니다.
 + 본 엔진은 단방향(One-way) 모드만 지원하므로 동시에 2개 이상의 포지션이나 주문을 가질 수 없습니다. (1 포지션 / 1 주문 원칙)
++ `vtm.now_info()`는 현 시점 데이터만 반환합니다. 과거 데이터가 필요한 지표 계산 시, 사용자가 직접 가격 데이터를 누적/관리해야 합니다.
 
 ### 2️⃣ `VirtualTradeMachine` 상세 설명
 VirtualTradeMachine은 백테스팅을 총괄하는 핵심 엔진입니다. 1분봉 데이터를 이용 및 제공하며 전략 작성 시 vtm 객체를 통해 데이터를 조회하고 주문을 실행합니다.
